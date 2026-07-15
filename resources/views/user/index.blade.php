@@ -1,111 +1,126 @@
 @extends('layouts.app')
 
-
 @section('content')
-    <h2>User Management</h2>
+    <div class="container mt-4">
 
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-primary mb-0">
+                <i class="bi bi-people-fill"></i> User Management
+            </h2>
 
-    <a href="{{ route('user.create') }}" class="btn btn-primary mb-3">
-
-        Add User
-
-    </a>
-
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+            <a href="{{ route('user.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add User
+            </a>
         </div>
-    @endif
 
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                {{ session('success') }}
 
-    <table class="table table-bordered">
+                <button type="button" class="btn-close" data-bs-dismiss="alert">
+                </button>
+            </div>
+        @endif
 
+        <div class="card shadow-sm border-0">
 
-        <thead>
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    User List
+                </h5>
+            </div>
 
-            <tr>
+            <div class="card-body">
 
-                <th>ID</th>
+                <table class="table table-bordered table-striped align-middle">
 
-                <th>Name</th>
+                    <thead class="table-primary">
 
-                <th>Email</th>
+                        <tr>
 
-                <th>Create Date</th>
+                            <th width="80">No</th>
 
-                <th>Action</th>
+                            <th>Name</th>
 
-            </tr>
+                            <th>Email</th>
 
-        </thead>
+                            <th width="180">Created At</th>
 
+                            <th width="180" class="text-center">
+                                Action
+                            </th>
 
+                        </tr>
 
-        <tbody>
+                    </thead>
 
+                    <tbody>
 
-            @foreach ($users as $user)
-                <tr>
+                        @forelse($users as $user)
+                            <tr>
 
+                                <td>
+                                    <span class="font-bold">
+                                        {{ $user->id }}
+                                    </span>
+                                </td>
 
-                    <td>
-                        {{ $user->id }}
-                    </td>
+                                <td class="fw-semibold">
+                                    {{ $user->name }}
+                                </td>
 
+                                <td>
+                                    {{ $user->email }}
+                                </td>
 
-                    <td>
-                        {{ $user->name }}
-                    </td>
+                                <td>
+                                    {{ $user->created_at->format('d/m/Y H:i') }}
+                                </td>
 
+                                <td class="text-center">
 
-                    <td>
-                        {{ $user->email }}
-                    </td>
+                                    <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
 
+                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST" class="d-inline">
 
-                    <td>
-                        {{ $user->created_at }}
-                    </td>
+                                        @csrf
+                                        @method('DELETE')
 
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure you want to delete this user?')">
 
-                    <td>
+                                            Delete
 
+                                        </button>
 
-                        <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning">
+                                    </form>
 
-                            Edit
+                                </td>
 
-                        </a>
+                            </tr>
 
+                        @empty
 
+                            <tr>
 
-                        <form action="{{ route('user.destroy', $user->id) }}" method="POST" style="display:inline">
+                                <td colspan="5" class="text-center text-muted py-4">
 
+                                    No users found.
 
-                            @csrf
+                                </td>
 
-                            @method('DELETE')
+                            </tr>
+                        @endforelse
 
+                    </tbody>
 
-                            <button class="btn btn-danger">
+                </table>
 
-                                Delete
+            </div>
 
-                            </button>
+        </div>
 
-
-                        </form>
-
-
-                    </td>
-
-
-                </tr>
-            @endforeach
-
-
-        </tbody>
-
-
-    </table>
+    </div>
 @endsection
